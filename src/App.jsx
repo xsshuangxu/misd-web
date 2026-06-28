@@ -97,19 +97,58 @@ function App() {
         </p>
   
         <div style={{ marginTop: "28px" }}>
-          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-            💬 Chat
-          </div>
-          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-            🖼️ Memories
-          </div>
-          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-            🪞 Reflection
-          </div>
-          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-            📍 Plans
-          </div>
-        </div>
+  <div
+    style={{
+      background: "#f7f7f7",
+      borderRadius: "18px",
+      padding: "18px",
+      marginBottom: "18px",
+    }}
+  >
+    <div style={{ fontSize: "13px", color: "#999", marginBottom: "8px" }}>
+      Relationship Insight
+    </div>
+    <div style={{ fontSize: "18px", fontWeight: 600 }}>
+      You have not created a shared memory this week.
+    </div>
+    <div style={{ color: "#777", marginTop: "8px", lineHeight: 1.4 }}>
+      MisD can help you plan a small moment to keep this world alive.
+    </div>
+  </div>
+
+  <div
+    style={{
+      background: "#111",
+      color: "#fff",
+      borderRadius: "18px",
+      padding: "18px",
+      marginBottom: "22px",
+    }}
+  >
+    <div style={{ fontSize: "13px", opacity: 0.7, marginBottom: "8px" }}>
+      Suggested Action
+    </div>
+    <div style={{ fontSize: "18px", fontWeight: 600 }}>
+      Plan a 20-minute call tonight
+    </div>
+    <div style={{ opacity: 0.75, marginTop: "8px", lineHeight: 1.4 }}>
+      A light check-in is better than waiting for a perfect moment.
+    </div>
+  </div>
+
+  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+    💬 Chat
+  </div>
+  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+    🖼️ Memories
+  </div>
+  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+    🪞 Reflection
+  </div>
+  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+    📍 Plans
+  </div>
+</div>
       </div>
     );
   }
