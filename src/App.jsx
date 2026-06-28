@@ -31,7 +31,88 @@ const messages = [
 function App() {
   const [page, setPage] = useState("home");
   const [activeChat, setActiveChat] = useState(chats[0]);
-
+  
+  const [showMoon, setShowMoon] = useState(false);
+  const [secret, setSecret] = useState("");
+  const [currentWorld, setCurrentWorld] = useState(null);
+  function handleSecretSubmit() {
+    if (secret === "1111") {
+      setCurrentWorld("Elizabeth World");
+      setShowMoon(false);
+      setSecret("");
+      setPage("world");
+      return;
+    }
+  
+    if (secret === "2222") {
+      setCurrentWorld("Project Alpha World");
+      setShowMoon(false);
+      setSecret("");
+      setPage("world");
+      return;
+    }
+  
+    alert("Wrong Secret");
+  }
+  if (page === "world") {
+    return (
+      <div
+        style={{
+          maxWidth: "430px",
+          margin: "0 auto",
+          minHeight: "100vh",
+          background: "#ffffff",
+          border: "1px solid #eee",
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+          padding: "24px",
+          boxSizing: "border-box",
+        }}
+      >
+        <button
+          onClick={() => {
+            setCurrentWorld(null);
+            setPage("home");
+          }}
+          style={{
+            border: "none",
+            background: "transparent",
+            fontSize: "15px",
+            marginBottom: "28px",
+            cursor: "pointer",
+          }}
+        >
+          ← Exit World
+        </button>
+  
+        <div style={{ fontSize: "13px", color: "#999", marginBottom: "8px" }}>
+          Private World
+        </div>
+  
+        <h1 style={{ margin: 0, fontSize: "34px", letterSpacing: "-1px" }}>
+          {currentWorld}
+        </h1>
+  
+        <p style={{ color: "#666", marginTop: "10px", lineHeight: 1.5 }}>
+          This is not just a chat. This is the relationship itself.
+        </p>
+  
+        <div style={{ marginTop: "28px" }}>
+          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+            💬 Chat
+          </div>
+          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+            🖼️ Memories
+          </div>
+          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+            🪞 Reflection
+          </div>
+          <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
+            📍 Plans
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (page === "chat") {
     return (
       <div
@@ -119,9 +200,35 @@ function App() {
           Public Hub
         </div>
 
-        <h1 style={{ fontSize: "34px", margin: 0, letterSpacing: "-1px" }}>
-          MisD
-        </h1>
+        <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
+  <h1
+    style={{
+      fontSize: "34px",
+      margin: 0,
+      letterSpacing: "-1px",
+    }}
+  >
+    MisD
+  </h1>
+
+  <button
+    onClick={() => setShowMoon(true)}
+    style={{
+      border: "none",
+      background: "transparent",
+      fontSize: "22px",
+      cursor: "pointer",
+    }}
+  >
+    🌙
+  </button>
+</div>
 
         <p
           style={{
@@ -201,6 +308,57 @@ function App() {
           </div>
         ))}
       </main>
+      {showMoon && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.25)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    <div
+      style={{
+        width: "320px",
+        background: "#fff",
+        borderRadius: "20px",
+        padding: "24px",
+      }}
+    >
+      <h2>Enter Secret</h2>
+
+      <input
+        value={secret}
+        onChange={(e) => setSecret(e.target.value)}
+        placeholder="Enter your secret"
+        style={{
+          width: "100%",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #ddd",
+          boxSizing: "border-box",
+        }}
+      />
+
+      <button
+        onClick={handleSecretSubmit}
+        style={{
+          marginTop: "14px",
+          width: "100%",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "none",
+          background: "#111",
+          color: "#fff",
+        }}
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 }
