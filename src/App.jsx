@@ -9,7 +9,7 @@ const chats = [
   },
   {
     name: "Jackie",
-    message: "Let’s sync tomorrow morning.",
+    message: "Let's sync tomorrow morning.",
     time: "1h",
     avatar: "J",
   },
@@ -28,269 +28,195 @@ const messages = [
   { from: "Me", text: "Sounds good." },
 ];
 
+const worlds = {
+  "1111": {
+    name: "Elizabeth World",
+    type: "Long Distance",
+    tone: "A quiet space to keep building what matters next.",
+    idea: "Maybe create one small plan together this week.",
+  },
+  "2222": {
+    name: "Project Alpha World",
+    type: "Building Together",
+    tone: "A focused space for ideas, decisions, and next steps.",
+    idea: "Choose one clear milestone to move forward.",
+  },
+};
+
 function App() {
   const [page, setPage] = useState("home");
   const [activeChat, setActiveChat] = useState(chats[0]);
-  
   const [showMoon, setShowMoon] = useState(false);
   const [secret, setSecret] = useState("");
   const [currentWorld, setCurrentWorld] = useState(null);
-  function handleSecretSubmit() {
-    if (secret === "1111") {
-      setCurrentWorld("Elizabeth World");
-      setShowMoon(false);
-      setSecret("");
-      setPage("world");
+  const [currentModule, setCurrentModule] = useState(null);
+
+  function enterWorld() {
+    const world = worlds[secret];
+
+    if (!world) {
+      alert("Wrong Secret");
       return;
     }
-  
-    if (secret === "2222") {
-      setCurrentWorld("Project Alpha World");
-      setShowMoon(false);
-      setSecret("");
-      setPage("world");
-      return;
-    }
-  
-    alert("Wrong Secret");
-  }
-  if (page === "world") {
-    return (
-      <div
-        style={{
-          maxWidth: "430px",
-          margin: "0 auto",
-          minHeight: "100vh",
-          background: "#ffffff",
-          border: "1px solid #eee",
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-          padding: "24px",
-          boxSizing: "border-box",
-        }}
-      >
-        <button
-          onClick={() => {
-            setCurrentWorld(null);
-            setPage("home");
-          }}
-          style={{
-            border: "none",
-            background: "transparent",
-            fontSize: "15px",
-            marginBottom: "28px",
-            cursor: "pointer",
-          }}
-        >
-          ← Exit World
-        </button>
-  
-        <div style={{ fontSize: "13px", color: "#999", marginBottom: "8px" }}>
-          Private World
-        </div>
-  
-        <h1 style={{ margin: 0, fontSize: "34px", letterSpacing: "-1px" }}>
-          {currentWorld}
-        </h1>
-  
-        <p style={{ color: "#666", marginTop: "10px", lineHeight: 1.5 }}>
-          This is not just a chat. This is the relationship itself.
-        </p>
-  
-        <div style={{ marginTop: "28px" }}>
-  <div
-    style={{
-      background: "#f7f7f7",
-      borderRadius: "18px",
-      padding: "18px",
-      marginBottom: "18px",
-    }}
-  >
-    <div style={{ fontSize: "13px", color: "#999", marginBottom: "8px" }}>
-      Relationship Insight
-    </div>
-    <div style={{ fontSize: "18px", fontWeight: 600 }}>
-      You have not created a shared memory this week.
-    </div>
-    <div style={{ color: "#777", marginTop: "8px", lineHeight: 1.4 }}>
-      MisD can help you plan a small moment to keep this world alive.
-    </div>
-  </div>
 
-  <div
-    style={{
-      background: "#111",
-      color: "#fff",
-      borderRadius: "18px",
-      padding: "18px",
-      marginBottom: "22px",
-    }}
-  >
-    <div style={{ fontSize: "13px", opacity: 0.7, marginBottom: "8px" }}>
-      Suggested Action
-    </div>
-    <div style={{ fontSize: "18px", fontWeight: 600 }}>
-      Plan a 20-minute call tonight
-    </div>
-    <div style={{ opacity: 0.75, marginTop: "8px", lineHeight: 1.4 }}>
-      A light check-in is better than waiting for a perfect moment.
-    </div>
-  </div>
-
-  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-    💬 Chat
-  </div>
-  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-    🖼️ Memories
-  </div>
-  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-    🪞 Reflection
-  </div>
-  <div style={{ padding: "16px 0", borderTop: "1px solid #eee" }}>
-    📍 Plans
-  </div>
-</div>
-      </div>
-    );
+    setCurrentWorld(world);
+    setSecret("");
+    setShowMoon(false);
+    setPage("world");
   }
+
+  function exitWorld() {
+    setCurrentWorld(null);
+    setCurrentModule(null);
+    setPage("home");
+  }
+
+  function openModule(moduleName) {
+    setCurrentModule(moduleName);
+    setPage("module");
+  }
+
   if (page === "chat") {
     return (
-      <div
-        style={{
-          maxWidth: "430px",
-          margin: "0 auto",
-          minHeight: "100vh",
-          background: "#ffffff",
-          border: "1px solid #eee",
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        }}
-      >
-        <header
-          style={{
-            padding: "18px 22px",
-            borderBottom: "1px solid #f1f1f1",
-          }}
-        >
-          <button
-            onClick={() => setPage("home")}
-            style={{
-              border: "none",
-              background: "transparent",
-              fontSize: "15px",
-              marginBottom: "14px",
-              cursor: "pointer",
-            }}
-          >
-            ← Back
-          </button>
+      <AppShell>
+        <button onClick={() => setPage("home")} style={backButton}>
+          ← Back
+        </button>
 
-          <h2 style={{ margin: 0 }}>{activeChat.name}</h2>
-          <div style={{ color: "#999", fontSize: "13px", marginTop: "4px" }}>
-            Online
-          </div>
+        <header style={{ textAlign: "center", padding: "24px 0" }}>
+          <h1 style={{ margin: 0 }}>{activeChat.name}</h1>
+          <div style={{ color: "#999", marginTop: "8px" }}>Online</div>
         </header>
 
-        <main style={{ padding: "20px 22px" }}>
-          {messages.map((message, index) => {
-            const isMe = message.from === "Me";
-
-            return (
+        <main style={{ padding: "24px" }}>
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              style={{
+                display: "flex",
+                justifyContent:
+                  message.from === "Me" ? "flex-end" : "flex-start",
+                marginBottom: "14px",
+              }}
+            >
               <div
-                key={index}
                 style={{
-                  display: "flex",
-                  justifyContent: isMe ? "flex-end" : "flex-start",
-                  marginBottom: "12px",
+                  maxWidth: "70%",
+                  padding: "12px 16px",
+                  borderRadius: "18px",
+                  background: message.from === "Me" ? "#111" : "#f3f3f3",
+                  color: message.from === "Me" ? "#fff" : "#111",
                 }}
               >
-                <div
-                  style={{
-                    maxWidth: "72%",
-                    background: isMe ? "#111" : "#f3f3f5",
-                    color: isMe ? "#fff" : "#111",
-                    padding: "11px 14px",
-                    borderRadius: "18px",
-                    fontSize: "15px",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {message.text}
-                </div>
+                {message.text}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </main>
-      </div>
+      </AppShell>
+    );
+  }
+
+  if (page === "module") {
+    return (
+      <AppShell>
+        <button onClick={() => setPage("world")} style={backButton}>
+          ← Back to World
+        </button>
+
+        <div style={{ color: "#999", fontSize: "13px", marginTop: "28px" }}>
+          {currentWorld?.name}
+        </div>
+
+        <h1 style={{ fontSize: "34px", marginTop: "8px" }}>
+          {currentModule}
+        </h1>
+
+        <p style={{ color: "#666", lineHeight: 1.5 }}>
+          This space will grow into a dedicated tool for this relationship.
+        </p>
+      </AppShell>
+    );
+  }
+
+  if (page === "world") {
+    return (
+      <AppShell>
+        <button onClick={exitWorld} style={backButton}>
+          ← Exit World
+        </button>
+
+        <header style={{ textAlign: "center", padding: "28px 0 18px" }}>
+          <div style={{ color: "#999", fontSize: "13px" }}>Private World</div>
+          <h1 style={{ fontSize: "32px", margin: "8px 0 0" }}>
+            {currentWorld?.name}
+          </h1>
+          <p style={{ color: "#666", lineHeight: 1.5 }}>
+            {currentWorld?.tone}
+          </p>
+        </header>
+
+        <section style={softCard}>
+          <div style={label}>Current Direction</div>
+          <div style={{ fontSize: "18px", fontWeight: 600 }}>
+            {currentWorld?.type}
+          </div>
+        </section>
+
+        <section style={darkCard}>
+          <div style={{ ...label, color: "#aaa" }}>Next Possibility</div>
+          <div style={{ fontSize: "18px", fontWeight: 600 }}>
+            {currentWorld?.idea}
+          </div>
+        </section>
+
+        <main style={{ marginTop: "22px" }}>
+          <ModuleRow name="💬 Chat" onClick={() => openModule("Chat")} />
+          <ModuleRow name="🖼️ Memories" onClick={() => openModule("Memories")} />
+          <ModuleRow
+            name="🪞 Reflection"
+            onClick={() => openModule("Reflection")}
+          />
+          <ModuleRow name="📍 Plans" onClick={() => openModule("Plans")} />
+        </main>
+      </AppShell>
     );
   }
 
   return (
-    <div
-      style={{
-        maxWidth: "430px",
-        margin: "0 auto",
-        minHeight: "100vh",
-        background: "#ffffff",
-        border: "1px solid #eee",
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      }}
-    >
+    <AppShell>
       <header style={{ padding: "28px 22px 16px" }}>
-        <div style={{ fontSize: "13px", color: "#999", marginBottom: "6px" }}>
+        <div style={{ color: "#999", fontSize: "13px", textAlign: "center" }}>
           Public Hub
         </div>
 
         <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  }}
->
-  <h1
-    style={{
-      fontSize: "34px",
-      margin: 0,
-      letterSpacing: "-1px",
-    }}
-  >
-    MisD
-  </h1>
-
-  <button
-    onClick={() => setShowMoon(true)}
-    style={{
-      border: "none",
-      background: "transparent",
-      fontSize: "22px",
-      cursor: "pointer",
-    }}
-  >
-    🌙
-  </button>
-</div>
-
-        <p
           style={{
-            marginTop: "8px",
-            marginBottom: "20px",
-            color: "#666",
-            fontSize: "15px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
+          <h1 style={{ fontSize: "34px", margin: 0 }}>MisD</h1>
+
+          <button
+            onClick={() => setShowMoon(true)}
+            style={{
+              border: "none",
+              background: "transparent",
+              fontSize: "22px",
+              cursor: "pointer",
+            }}
+          >
+            🌙
+          </button>
+        </div>
+
+        <p style={{ marginTop: "8px", color: "#666" }}>
           Every relationship deserves its own world.
         </p>
 
-        <div
-          style={{
-            background: "#f5f5f7",
-            borderRadius: "16px",
-            padding: "13px 15px",
-            color: "#999",
-            fontSize: "15px",
-          }}
-        >
-          🔍 Search people, chats
-        </div>
+        <div style={searchBox}>🔍 Search people, chats</div>
       </header>
 
       <main>
@@ -301,105 +227,182 @@ function App() {
               setActiveChat(chat);
               setPage("chat");
             }}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              padding: "14px 22px",
-              borderTop: "1px solid #f1f1f1",
-              cursor: "pointer",
-            }}
+            style={chatRow}
           >
-            <div
-              style={{
-                width: "48px",
-                height: "48px",
-                borderRadius: "50%",
-                background: "#111",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "600",
-              }}
-            >
-              {chat.avatar}
-            </div>
-
+            <div style={avatar}>{chat.avatar}</div>
             <div style={{ flex: 1 }}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "4px",
-                }}
-              >
-                <strong>{chat.name}</strong>
-                <span style={{ fontSize: "12px", color: "#999" }}>
-                  {chat.time}
-                </span>
-              </div>
-
-              <div style={{ color: "#777", fontSize: "14px" }}>
+              <div style={{ fontWeight: 700 }}>{chat.name}</div>
+              <div style={{ color: "#777", marginTop: "6px" }}>
                 {chat.message}
               </div>
             </div>
+            <div style={{ color: "#999", fontSize: "12px" }}>{chat.time}</div>
           </div>
         ))}
       </main>
+
       {showMoon && (
-  <div
-    style={{
-      position: "fixed",
-      inset: 0,
-      background: "rgba(0,0,0,0.25)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
+        <MoonModal
+          secret={secret}
+          setSecret={setSecret}
+          onCancel={() => setShowMoon(false)}
+          onContinue={enterWorld}
+        />
+      )}
+    </AppShell>
+  );
+}
+
+function AppShell({ children }) {
+  return (
     <div
       style={{
-        width: "320px",
+        maxWidth: "430px",
+        margin: "0 auto",
+        minHeight: "100vh",
         background: "#fff",
-        borderRadius: "20px",
-        padding: "24px",
+        border: "1px solid #eee",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        boxSizing: "border-box",
       }}
     >
-      <h2>Enter Secret</h2>
-
-      <input
-        value={secret}
-        onChange={(e) => setSecret(e.target.value)}
-        placeholder="Enter your secret"
-        style={{
-          width: "100%",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "1px solid #ddd",
-          boxSizing: "border-box",
-        }}
-      />
-
-      <button
-        onClick={handleSecretSubmit}
-        style={{
-          marginTop: "14px",
-          width: "100%",
-          padding: "12px",
-          borderRadius: "12px",
-          border: "none",
-          background: "#111",
-          color: "#fff",
-        }}
-      >
-        Continue
-      </button>
-    </div>
-  </div>
-)}
+      {children}
     </div>
   );
 }
+
+function ModuleRow({ name, onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        padding: "16px 0",
+        borderTop: "1px solid #eee",
+        cursor: "pointer",
+        textAlign: "center",
+      }}
+    >
+      {name}
+    </div>
+  );
+}
+
+function MoonModal({ secret, setSecret, onCancel, onContinue }) {
+  return (
+    <div
+      onClick={onCancel}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.25)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "320px",
+          background: "#fff",
+          borderRadius: "20px",
+          padding: "24px",
+          boxSizing: "border-box",
+        }}
+      >
+        <h2 style={{ textAlign: "center", marginTop: 0 }}>Enter Secret</h2>
+
+        <input
+          value={secret}
+          onChange={(e) => setSecret(e.target.value)}
+          placeholder="Enter your secret"
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "12px",
+            border: "1px solid #ddd",
+            boxSizing: "border-box",
+          }}
+        />
+
+        <button onClick={onContinue} style={primaryButton}>
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const backButton = {
+  border: "none",
+  background: "transparent",
+  fontSize: "15px",
+  margin: "24px 0 0 22px",
+  cursor: "pointer",
+};
+
+const searchBox = {
+  marginTop: "22px",
+  padding: "14px",
+  borderRadius: "18px",
+  background: "#f5f5f5",
+  color: "#999",
+  textAlign: "center",
+};
+
+const chatRow = {
+  display: "flex",
+  alignItems: "center",
+  gap: "14px",
+  padding: "16px 22px",
+  borderTop: "1px solid #f1f1f1",
+  cursor: "pointer",
+};
+
+const avatar = {
+  width: "52px",
+  height: "52px",
+  borderRadius: "50%",
+  background: "#111",
+  color: "#fff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 700,
+};
+
+const softCard = {
+  margin: "0 22px 14px",
+  padding: "18px",
+  borderRadius: "18px",
+  background: "#f7f7f7",
+  textAlign: "center",
+};
+
+const darkCard = {
+  margin: "0 22px 22px",
+  padding: "18px",
+  borderRadius: "18px",
+  background: "#111",
+  color: "#fff",
+  textAlign: "center",
+};
+
+const label = {
+  fontSize: "13px",
+  color: "#999",
+  marginBottom: "8px",
+};
+
+const primaryButton = {
+  marginTop: "14px",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "none",
+  background: "#111",
+  color: "#fff",
+  cursor: "pointer",
+};
 
 export default App;
