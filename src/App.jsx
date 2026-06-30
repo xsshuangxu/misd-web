@@ -39,6 +39,7 @@ function App() {
     },
   ]);
   const [newPlan, setNewPlan] = useState("");
+  const [memories, setMemories] = useState([]);
 
   function enterWorld() {
     const world = worlds[secret];
@@ -94,6 +95,8 @@ function App() {
           onSend={(text) =>
             setMessages((prev) => [...prev, { from: "Me", text }])
           }
+          memories={memories}
+          onAddMemory={(memory) => setMemories((prev) => [...prev, memory])}
         />
       </AppShell>
     );

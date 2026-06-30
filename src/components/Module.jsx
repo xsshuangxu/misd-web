@@ -12,8 +12,11 @@ function Module({
   primaryButton,
   messages,
   onSend,
+  memories,
+  onAddMemory,
 }) {
   const [chatInput, setChatInput] = useState("");
+  const [caption, setCaption] = useState("");
 
   function handleSend(e) {
     e.preventDefault();
@@ -82,6 +85,48 @@ function Module({
               Send
             </button>
           </form>
+        </>
+      )}
+
+      {currentModule === "Memories" && (
+        <>
+          <label style={uploadLabel}>
+            📷 Add Photo
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                onAddMemory({ url, caption: caption.trim(), id: Date.now() });
+                setCaption("");
+                e.target.value = "";
+              }}
+            />
+          </label>
+          <input
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+            placeholder="Caption (optional)"
+            style={captionInput}
+          />
+          {memories.length === 0 && (
+            <p style={{ color: "#999", marginTop: "24px", textAlign: "center" }}>
+              No memories yet. Upload a photo above.
+            </p>
+          )}
+          <div style={memoryGrid}>
+            {memories.map((m) => (
+              <div key={m.id} style={memoryCard}>
+                <img src={m.url} alt={m.caption || "memory"} style={memoryImg} />
+                {m.caption ? (
+                  <div style={memoryCaption}>{m.caption}</div>
+                ) : null}
+              </div>
+            ))}
+          </div>
         </>
       )}
 
@@ -221,6 +266,55 @@ function Module({
     </>
   );
 }
+
+const uploadLabel = {
+  display: "block",
+  marginTop: "20px",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px dashed #ccc",
+  textAlign: "center",
+  cursor: "pointer",
+  color: "#555",
+  fontSize: "15px",
+};
+
+const captionInput = {
+  display: "block",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+  marginTop: "10px",
+  boxSizing: "border-box",
+  fontSize: "15px",
+};
+
+const memoryGrid = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "12px",
+  marginTop: "20px",
+};
+
+const memoryCard = {
+  borderRadius: "14px",
+  overflow: "hidden",
+  background: "#f5f5f5",
+};
+
+const memoryImg = {
+  width: "100%",
+  aspectRatio: "1",
+  objectFit: "cover",
+  display: "block",
+};
+
+const memoryCaption = {
+  padding: "8px 10px",
+  fontSize: "13px",
+  color: "#555",
+};
 
 const sendButton = {
   padding: "12px 20px",
