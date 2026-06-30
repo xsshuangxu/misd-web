@@ -13,14 +13,22 @@ import {
   label,
   primaryButton,
 } from "./styles/sharedStyles";
+import useNavigation from "./hooks/useNavigation";
 
 function App() {
-  const [page, setPage] = useState("home");
-  const [activeChat, setActiveChat] = useState(chats[0]);
+  const {
+    page,
+    setPage,
+    activeChat,
+    setActiveChat,
+    currentWorld,
+    setCurrentWorld,
+    currentModule,
+    exitWorld,
+    openModule,
+  } = useNavigation();
   const [showMoon, setShowMoon] = useState(false);
   const [secret, setSecret] = useState("");
-  const [currentWorld, setCurrentWorld] = useState(null);
-  const [currentModule, setCurrentModule] = useState(null);
   const [plans, setPlans] = useState([
     {
       id: 1,
@@ -28,8 +36,7 @@ function App() {
       completed: false,
     },
   ]);
-const [newPlan, setNewPlan] = useState("");
-  
+  const [newPlan, setNewPlan] = useState("");
 
   function enterWorld() {
     const world = worlds[secret];
@@ -43,17 +50,6 @@ const [newPlan, setNewPlan] = useState("");
     setSecret("");
     setShowMoon(false);
     setPage("world");
-  }
-
-  function exitWorld() {
-    setCurrentWorld(null);
-    setCurrentModule(null);
-    setPage("home");
-  }
-
-  function openModule(moduleName) {
-    setCurrentModule(moduleName);
-    setPage("module");
   }
 
   if (page === "chat") {
