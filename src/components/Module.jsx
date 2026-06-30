@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function Module({
   onBackToWorld,
   backButton,
@@ -8,7 +10,18 @@ function Module({
   plans,
   setPlans,
   primaryButton,
+  messages,
+  onSend,
 }) {
+  const [chatInput, setChatInput] = useState("");
+
+  function handleSend(e) {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+    onSend(chatInput.trim());
+    setChatInput("");
+  }
+
   return (
     <>
       <button onClick={onBackToWorld} style={backButton}>
@@ -20,6 +33,57 @@ function Module({
       </div>
 
       <h1 style={{ fontSize: "34px", marginTop: "8px" }}>{currentModule}</h1>
+
+      {currentModule === "Chat" && (
+        <>
+          <div style={{ padding: "0 0 12px" }}>
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  justifyContent:
+                    message.from === "Me" ? "flex-end" : "flex-start",
+                  marginBottom: "10px",
+                }}
+              >
+                <div
+                  style={{
+                    maxWidth: "70%",
+                    padding: "10px 14px",
+                    borderRadius: "16px",
+                    background: message.from === "Me" ? "#111" : "#f3f3f3",
+                    color: message.from === "Me" ? "#fff" : "#111",
+                    fontSize: "15px",
+                  }}
+                >
+                  {message.text}
+                </div>
+              </div>
+            ))}
+          </div>
+          <form
+            onSubmit={handleSend}
+            style={{ display: "flex", gap: "10px", marginTop: "8px" }}
+          >
+            <input
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Message..."
+              style={{
+                flex: 1,
+                padding: "12px 16px",
+                borderRadius: "18px",
+                border: "1px solid #ddd",
+                fontSize: "15px",
+              }}
+            />
+            <button type="submit" style={sendButton}>
+              Send
+            </button>
+          </form>
+        </>
+      )}
 
       {currentModule === "Plans" && (
         <>
@@ -157,5 +221,15 @@ function Module({
     </>
   );
 }
+
+const sendButton = {
+  padding: "12px 20px",
+  borderRadius: "18px",
+  border: "none",
+  background: "#111",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+};
 
 export default Module;

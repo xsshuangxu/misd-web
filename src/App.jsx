@@ -5,7 +5,7 @@ import World from "./components/World";
 import Module from "./components/Module";
 import Chat from "./components/Chat";
 import AppShell from "./components/AppShell";
-import { chats, messages, worlds as initialWorlds } from "./data/mockData";
+import { chats, messages as initialMessages, worlds as initialWorlds } from "./data/mockData";
 import {
   backButton,
   softCard,
@@ -30,6 +30,7 @@ function App() {
   } = useNavigation();
   const { showMoon, setShowMoon, secret, setSecret } = useMoonModal();
   const [worlds, setWorlds] = useState(initialWorlds);
+  const [messages, setMessages] = useState(initialMessages);
   const [plans, setPlans] = useState([
     {
       id: 1,
@@ -68,6 +69,9 @@ function App() {
           backButton={backButton}
           activeChat={activeChat}
           messages={messages}
+          onSend={(text) =>
+            setMessages((prev) => [...prev, { from: "Me", text }])
+          }
         />
       </AppShell>
     );
@@ -86,6 +90,10 @@ function App() {
           plans={plans}
           setPlans={setPlans}
           primaryButton={primaryButton}
+          messages={messages}
+          onSend={(text) =>
+            setMessages((prev) => [...prev, { from: "Me", text }])
+          }
         />
       </AppShell>
     );
