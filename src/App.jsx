@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import World from "./components/World";
 import Module from "./components/Module";
 import Chat from "./components/Chat";
+import AppShell from "./components/AppShell";
 import { chats, messages, worlds } from "./data/mockData";
 import {
   backButton,
@@ -119,24 +120,6 @@ const [newPlan, setNewPlan] = useState("");
         />
       )}
     </AppShell>
-  );
-}
-
-function AppShell({ children }) {
-  return (
-    <div
-      style={{
-        maxWidth: "430px",
-        margin: "0 auto",
-        minHeight: "100vh",
-        background: "#fff",
-        border: "1px solid #eee",
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        boxSizing: "border-box",
-      }}
-    >
-      {children}
-    </div>
   );
 }
 
