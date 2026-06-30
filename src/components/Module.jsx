@@ -14,9 +14,13 @@ function Module({
   onSend,
   memories,
   onAddMemory,
+  reflections,
+  onAddReflection,
 }) {
   const [chatInput, setChatInput] = useState("");
   const [caption, setCaption] = useState("");
+  const [reflectionText, setReflectionText] = useState("");
+  const [reflectionRating, setReflectionRating] = useState(3);
 
   function handleSend(e) {
     e.preventDefault();
@@ -85,6 +89,73 @@ function Module({
               Send
             </button>
           </form>
+        </>
+      )}
+
+      {currentModule === "Reflection" && (
+        <>
+          <textarea
+            value={reflectionText}
+            onChange={(e) => setReflectionText(e.target.value)}
+            placeholder="What's on your mind..."
+            rows={4}
+            style={reflectionTextarea}
+          />
+
+          <div style={{ marginTop: "14px" }}>
+            <div style={{ fontSize: "13px", color: "#999", marginBottom: "8px" }}>
+              Mood
+            </div>
+            <div style={{ display: "flex", gap: "10px" }}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setReflectionRating(n)}
+                  style={{
+                    ...moodButton,
+                    background: reflectionRating === n ? "#111" : "#f3f3f3",
+                    color: reflectionRating === n ? "#fff" : "#111",
+                  }}
+                >
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              if (!reflectionText.trim()) return;
+              onAddReflection({
+                id: Date.now(),
+                text: reflectionText.trim(),
+                rating: reflectionRating,
+                createdAt: new Date().toLocaleString(),
+              });
+              setReflectionText("");
+              setReflectionRating(3);
+            }}
+            style={saveReflectionButton}
+          >
+            Save Reflection
+          </button>
+
+          {reflections.length > 0 && (
+            <div style={{ marginTop: "28px" }}>
+              <div style={{ fontSize: "13px", color: "#999", marginBottom: "12px" }}>
+                Past Reflections
+              </div>
+              {reflections.map((r) => (
+                <div key={r.id} style={reflectionCard}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <span style={{ fontSize: "13px", color: "#999" }}>{r.createdAt}</span>
+                    <span style={{ fontWeight: 700 }}>{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                  </div>
+                  <div style={{ lineHeight: 1.5 }}>{r.text}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
 
@@ -266,6 +337,48 @@ function Module({
     </>
   );
 }
+
+const reflectionTextarea = {
+  display: "block",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+  marginTop: "20px",
+  boxSizing: "border-box",
+  fontSize: "15px",
+  resize: "vertical",
+  fontFamily: "inherit",
+};
+
+const moodButton = {
+  width: "42px",
+  height: "42px",
+  borderRadius: "50%",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "16px",
+  fontWeight: 700,
+};
+
+const saveReflectionButton = {
+  marginTop: "16px",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "none",
+  background: "#111",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+};
+
+const reflectionCard = {
+  padding: "16px",
+  borderRadius: "14px",
+  background: "#f7f7f7",
+  marginBottom: "12px",
+};
 
 const uploadLabel = {
   display: "block",

@@ -40,6 +40,7 @@ function App() {
   ]);
   const [newPlan, setNewPlan] = useState("");
   const [memories, setMemories] = useState([]);
+  const [reflections, setReflections] = useState([]);
 
   function enterWorld() {
     const world = worlds[secret];
@@ -97,6 +98,8 @@ function App() {
           }
           memories={memories}
           onAddMemory={(memory) => setMemories((prev) => [...prev, memory])}
+          reflections={reflections}
+          onAddReflection={(r) => setReflections((prev) => [r, ...prev])}
         />
       </AppShell>
     );
