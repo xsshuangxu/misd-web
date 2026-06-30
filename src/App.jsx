@@ -14,6 +14,7 @@ import {
   primaryButton,
 } from "./styles/sharedStyles";
 import useNavigation from "./hooks/useNavigation";
+import useMoonModal from "./hooks/useMoonModal";
 
 function App() {
   const {
@@ -27,8 +28,7 @@ function App() {
     exitWorld,
     openModule,
   } = useNavigation();
-  const [showMoon, setShowMoon] = useState(false);
-  const [secret, setSecret] = useState("");
+  const { showMoon, setShowMoon, secret, setSecret } = useMoonModal();
   const [plans, setPlans] = useState([
     {
       id: 1,
