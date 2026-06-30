@@ -5,22 +5,25 @@ function Module({
   backButton,
   currentWorld,
   currentModule,
-  newPlan,
-  setNewPlan,
   plans,
   setPlans,
-  primaryButton,
   messages,
   onSend,
   memories,
   onAddMemory,
   reflections,
   onAddReflection,
+  profile,
+  onSaveProfile,
 }) {
   const [chatInput, setChatInput] = useState("");
   const [caption, setCaption] = useState("");
   const [reflectionText, setReflectionText] = useState("");
   const [reflectionRating, setReflectionRating] = useState(3);
+  const [planTitle, setPlanTitle] = useState("");
+  const [planOwner, setPlanOwner] = useState("Both");
+  const [planDueDate, setPlanDueDate] = useState("");
+  const [profileDraft, setProfileDraft] = useState(null);
 
   function handleSend(e) {
     e.preventDefault();
@@ -91,6 +94,84 @@ function Module({
           </form>
         </>
       )}
+
+      {currentModule === "Profile" && (() => {
+        const draft = profileDraft ?? profile;
+        const relTypes = ["Couple", "Friend", "Family", "Project", "Mentor", "Healthcare", "Custom"];
+        return (
+          <>
+            <p style={{ color: "#999", fontSize: "13px", marginTop: "8px", lineHeight: 1.5 }}>
+              This is the relationship context used to understand this World. Keep it honest and current.
+            </p>
+
+            <div style={profileSection}>
+              <div style={profileLabel}>World Name</div>
+              <div style={{ fontWeight: 600, fontSize: "16px" }}>{currentWorld?.name}</div>
+            </div>
+
+            <div style={profileSection}>
+              <div style={profileLabel}>Relationship Type</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px" }}>
+                {relTypes.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setProfileDraft({ ...draft, relType: t })}
+                    style={{
+                      ...profileChip,
+                      background: (draft.relType || profile.relType) === t ? "#111" : "#f3f3f3",
+                      color: (draft.relType || profile.relType) === t ? "#fff" : "#111",
+                    }}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div style={profileSection}>
+              <div style={profileLabel}>Describe this relationship</div>
+              <textarea
+                value={draft.description ?? profile.description ?? ""}
+                onChange={(e) => setProfileDraft({ ...draft, description: e.target.value })}
+                placeholder="One sentence about what this relationship means..."
+                rows={2}
+                style={profileTextarea}
+              />
+            </div>
+
+            <div style={profileSection}>
+              <div style={profileLabel}>Current Shared Goal</div>
+              <textarea
+                value={draft.goal ?? profile.goal ?? ""}
+                onChange={(e) => setProfileDraft({ ...draft, goal: e.target.value })}
+                placeholder="What are you both working toward right now?"
+                rows={2}
+                style={profileTextarea}
+              />
+            </div>
+
+            <div style={profileSection}>
+              <div style={profileLabel}>Shared Interests</div>
+              <input
+                value={draft.interests ?? profile.interests ?? ""}
+                onChange={(e) => setProfileDraft({ ...draft, interests: e.target.value })}
+                placeholder="e.g. hiking, cooking, travel"
+                style={profileInput}
+              />
+            </div>
+
+            <button
+              onClick={() => {
+                onSaveProfile(draft);
+                setProfileDraft(null);
+              }}
+              style={saveProfileButton}
+            >
+              Save Context
+            </button>
+          </>
+        );
+      })()}
 
       {currentModule === "Reflection" && (
         <>
@@ -204,33 +285,56 @@ function Module({
       {currentModule === "Plans" && (
         <>
           <input
-            value={newPlan}
-            onChange={(e) => setNewPlan(e.target.value)}
-            placeholder="New plan..."
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "12px",
-              border: "1px solid #ddd",
-              marginTop: "20px",
-              boxSizing: "border-box",
-            }}
+            value={planTitle}
+            onChange={(e) => setPlanTitle(e.target.value)}
+            placeholder="Plan title..."
+            style={planInput}
+          />
+
+          <div style={{ marginTop: "10px" }}>
+            <div style={{ fontSize: "13px", color: "#999", marginBottom: "6px" }}>Owner</div>
+            <div style={{ display: "flex", gap: "8px" }}>
+              {["Me", "Partner", "Both"].map((o) => (
+                <button
+                  key={o}
+                  onClick={() => setPlanOwner(o)}
+                  style={{
+                    ...ownerButton,
+                    background: planOwner === o ? "#111" : "#f3f3f3",
+                    color: planOwner === o ? "#fff" : "#111",
+                  }}
+                >
+                  {o}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <input
+            type="date"
+            value={planDueDate}
+            onChange={(e) => setPlanDueDate(e.target.value)}
+            style={{ ...planInput, marginTop: "10px" }}
           />
 
           <button
             onClick={() => {
-              if (!newPlan.trim()) return;
+              if (!planTitle.trim()) return;
               setPlans([
                 ...plans,
                 {
                   id: Date.now(),
-                  title: newPlan,
+                  title: planTitle.trim(),
+                  owner: planOwner,
+                  dueDate: planDueDate,
                   completed: false,
                 },
               ]);
-              setNewPlan("");
+              setPlanTitle("");
+              setPlanOwner("Both");
+              setPlanDueDate("");
             }}
-            style={primaryButton}
+            style={addPlanButton}
           >
             Add Plan
           </button>
@@ -238,44 +342,41 @@ function Module({
           <div style={{ marginTop: "24px" }}>
             {[...plans]
               .sort((a, b) => Number(a.completed) - Number(b.completed))
-              .map((plan, index) => (
+              .map((plan) => (
                 <div
-                  key={index}
+                  key={plan.id}
                   style={{
-                    padding: "14px",
-                    borderRadius: "12px",
-                    background: "#f5f5f5",
-                    marginBottom: "12px",
+                    ...planCard,
+                    opacity: plan.completed ? 0.5 : 1,
                   }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>{plan.title}</span>
-
-                    <button
-                      onClick={() => {
-                        setPlans(
-                          plans.map((p) =>
-                            p.id === plan.id
-                              ? { ...p, completed: !p.completed }
-                              : p
-                          )
-                        );
-                      }}
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        cursor: "pointer",
-                        fontSize: "18px",
-                      }}
-                    >
-                      {plan.completed ? "✅" : "⭕"}
-                    </button>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <div style={{ fontWeight: 600, textDecoration: plan.completed ? "line-through" : "none" }}>
+                        {plan.title}
+                      </div>
+                      <div style={{ fontSize: "13px", color: "#999", marginTop: "4px" }}>
+                        {plan.owner}{plan.dueDate ? ` · ${plan.dueDate}` : ""}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                      <button
+                        onClick={() =>
+                          setPlans(plans.map((p) =>
+                            p.id === plan.id ? { ...p, completed: !p.completed } : p
+                          ))
+                        }
+                        style={iconButton}
+                      >
+                        {plan.completed ? "✅" : "⭕"}
+                      </button>
+                      <button
+                        onClick={() => setPlans(plans.filter((p) => p.id !== plan.id))}
+                        style={iconButton}
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -337,6 +438,109 @@ function Module({
     </>
   );
 }
+
+const profileSection = {
+  marginTop: "22px",
+};
+
+const profileLabel = {
+  fontSize: "13px",
+  color: "#999",
+  marginBottom: "6px",
+};
+
+const profileChip = {
+  padding: "8px 14px",
+  borderRadius: "20px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "13px",
+  fontWeight: 600,
+};
+
+const profileTextarea = {
+  display: "block",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+  marginTop: "6px",
+  boxSizing: "border-box",
+  fontSize: "15px",
+  resize: "vertical",
+  fontFamily: "inherit",
+};
+
+const profileInput = {
+  display: "block",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+  marginTop: "6px",
+  boxSizing: "border-box",
+  fontSize: "15px",
+};
+
+const saveProfileButton = {
+  marginTop: "24px",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "none",
+  background: "#111",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+};
+
+const planInput = {
+  display: "block",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+  marginTop: "16px",
+  boxSizing: "border-box",
+  fontSize: "15px",
+};
+
+const ownerButton = {
+  flex: 1,
+  padding: "10px",
+  borderRadius: "10px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "14px",
+  fontWeight: 600,
+};
+
+const addPlanButton = {
+  marginTop: "14px",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "none",
+  background: "#111",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "15px",
+};
+
+const planCard = {
+  padding: "14px",
+  borderRadius: "14px",
+  background: "#f5f5f5",
+  marginBottom: "12px",
+};
+
+const iconButton = {
+  border: "none",
+  background: "transparent",
+  cursor: "pointer",
+  fontSize: "18px",
+  padding: "2px",
+};
 
 const reflectionTextarea = {
   display: "block",

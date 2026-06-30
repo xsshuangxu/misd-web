@@ -11,7 +11,6 @@ import {
   softCard,
   darkCard,
   label,
-  primaryButton,
 } from "./styles/sharedStyles";
 import useNavigation from "./hooks/useNavigation";
 import useMoonModal from "./hooks/useMoonModal";
@@ -35,12 +34,23 @@ function App() {
     {
       id: 1,
       title: "Dinner together",
+      owner: "Both",
+      dueDate: "",
       completed: false,
     },
   ]);
-  const [newPlan, setNewPlan] = useState("");
   const [memories, setMemories] = useState([]);
   const [reflections, setReflections] = useState([]);
+  const [profiles, setProfiles] = useState({});
+
+  // TODO:
+  // Replace mock insight with real AI-generated relationship reasoning.
+  const insight = {
+    title: "Relationship Insight",
+    summary: "Elizabeth has seemed more stressed recently.",
+    recommendation:
+      "A short phone call this week may be more meaningful than planning a long activity.",
+  };
 
   function enterWorld() {
     const world = worlds[secret];
@@ -87,11 +97,8 @@ function App() {
           backButton={backButton}
           currentWorld={currentWorld}
           currentModule={currentModule}
-          newPlan={newPlan}
-          setNewPlan={setNewPlan}
           plans={plans}
           setPlans={setPlans}
-          primaryButton={primaryButton}
           messages={messages}
           onSend={(text) =>
             setMessages((prev) => [...prev, { from: "Me", text }])
@@ -100,6 +107,10 @@ function App() {
           onAddMemory={(memory) => setMemories((prev) => [...prev, memory])}
           reflections={reflections}
           onAddReflection={(r) => setReflections((prev) => [r, ...prev])}
+          profile={profiles[currentWorld?.name] || {}}
+          onSaveProfile={(p) =>
+            setProfiles((prev) => ({ ...prev, [currentWorld.name]: p }))
+          }
         />
       </AppShell>
     );
@@ -116,6 +127,7 @@ function App() {
           softCard={softCard}
           darkCard={darkCard}
           label={label}
+          insight={insight}
         />
       </AppShell>
     );
