@@ -139,62 +139,12 @@ const [newPlan, setNewPlan] = useState("");
 
   return (
     <AppShell>
-      <header style={{ padding: "28px 22px 16px" }}>
-        <div style={{ color: "#999", fontSize: "13px", textAlign: "center" }}>
-          Public Hub
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <h1 style={{ fontSize: "34px", margin: 0 }}>MisD</h1>
-
-          <button
-            onClick={() => setShowMoon(true)}
-            style={{
-              border: "none",
-              background: "transparent",
-              fontSize: "22px",
-              cursor: "pointer",
-            }}
-          >
-            🌙
-          </button>
-        </div>
-
-        <p style={{ marginTop: "8px", color: "#666" }}>
-          Every relationship deserves its own world.
-        </p>
-
-        <div style={searchBox}>🔍 Search people, chats</div>
-      </header>
-
-      <main>
-        {chats.map((chat) => (
-          <div
-            key={chat.name}
-            onClick={() => {
-              setActiveChat(chat);
-              setPage("chat");
-            }}
-            style={chatRow}
-          >
-            <div style={avatar}>{chat.avatar}</div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700 }}>{chat.name}</div>
-              <div style={{ color: "#777", marginTop: "6px" }}>
-                {chat.message}
-              </div>
-            </div>
-            <div style={{ color: "#999", fontSize: "12px" }}>{chat.time}</div>
-          </div>
-        ))}
-      </main>
-
+      <Home
+        chats={chats}
+        setActiveChat={setActiveChat}
+        setPage={setPage}
+        setShowMoon={setShowMoon}
+      />
       {showMoon && (
         <MoonModal
           secret={secret}
@@ -206,6 +156,49 @@ const [newPlan, setNewPlan] = useState("");
     </AppShell>
   );
 }
+
+
+const backButton = {
+  border: "none",
+  background: "transparent",
+  fontSize: "15px",
+  margin: "24px 0 0 22px",
+  cursor: "pointer",
+};
+
+const softCard = {
+  margin: "0 22px 14px",
+  padding: "18px",
+  borderRadius: "18px",
+  background: "#f7f7f7",
+  textAlign: "center",
+};
+
+const darkCard = {
+  margin: "0 22px 22px",
+  padding: "18px",
+  borderRadius: "18px",
+  background: "#111",
+  color: "#fff",
+  textAlign: "center",
+};
+
+const label = {
+  fontSize: "13px",
+  color: "#999",
+  marginBottom: "8px",
+};
+
+const primaryButton = {
+  marginTop: "14px",
+  width: "100%",
+  padding: "12px",
+  borderRadius: "12px",
+  border: "none",
+  background: "#111",
+  color: "#fff",
+  cursor: "pointer",
+};
 
 function AppShell({ children }) {
   return (
