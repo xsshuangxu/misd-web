@@ -14,6 +14,7 @@ import {
 } from "./styles/sharedStyles";
 import useNavigation from "./hooks/useNavigation";
 import useMoonModal from "./hooks/useMoonModal";
+import { generateInsight } from "./utils/relationshipReasoner";
 
 function App() {
   const {
@@ -43,14 +44,13 @@ function App() {
   const [reflections, setReflections] = useState([]);
   const [profiles, setProfiles] = useState({});
 
-  // TODO:
-  // Replace mock insight with real AI-generated relationship reasoning.
-  const insight = {
-    title: "Relationship Insight",
-    summary: "Elizabeth has seemed more stressed recently.",
-    recommendation:
-      "A short phone call this week may be more meaningful than planning a long activity.",
-  };
+  const insight = generateInsight({
+    profile: profiles[currentWorld?.name] || {},
+    messages,
+    reflections,
+    plans,
+    memories,
+  });
 
   function enterWorld() {
     const world = worlds[secret];
